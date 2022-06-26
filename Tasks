@@ -304,6 +304,21 @@ on a.maker=p.maker
 
 #41
 
+#42
+Find the names of ships sunk at battles, along with the names of the corresponding battles.
+Select ship,battle from outcomes where result='sunk'
+
+#43
+Get the battles that occurred in years when no ships were launched into water.
+select distinct name from battles where datepart(year,date) not in 
+(Select launched from ships where launched is not null)
+
+#44
+Find all ship names beginning with the letter R.
+Select distinct name from ships where name like 'R%'
+union 
+Select distinct ship from outcomes where ship like 'R%'
+
 
 
 
