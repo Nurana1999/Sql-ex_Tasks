@@ -319,6 +319,48 @@ Select distinct name from ships where name like 'R%'
 union 
 Select distinct ship from outcomes where ship like 'R%'
 
+#45
+Find all ship names consisting of three or more words (e.g., King George V).
+Consider the words in ship names to be separated by single spaces, and the ship names to have no leading or trailing spaces.
+
+select ship  from (
+Select distinct ship,sum(len(trim(ship))-len(replace(trim(ship),' ','')))+1 as say from
+(Select distinct  ship from outcomes 
+union
+Select distinct  name from ships
+) t group by ship
+having
+sum(len(trim(ship))-len(replace(trim(ship),' ','')))+1>=3
+) t
+
+#46
+For each ship that participated in the Battle of Guadalcanal, get its name, displacement, and the number of guns.
+Select distinct a.ship,b.displacement,b.numGuns from 
+(Select ship from outcomes
+where battle='Guadalcanal') a
+left join 
+(select name,c.class,numGuns,displacement from ships s right join classes c on 
+s.class=c.class
+) b on a.ship=b.name or a.ship=b.class
+
+#47
+
+#48
+Find the ship classes having at least one ship sunk in battles.
+Select c.class from classes c join ships s on c.class=s.class
+where name in (Select ship from outcomes where result='sunk')
+union 
+Select c.class from classes c join outcomes o on c.class=o.ship where o.result='sunk'
+
+#49
+Find the names of the ships having a gun caliber of 16 inches (including ships in the Outcomes table).
+Select name from classes c join ships s on c.class=s.class where bore=16
+union 
+Select ship from classes c join outcomes o on c.class=o.ship where bore=16
+
+#50
+Find the battles in which Kongo-class ships from the Ships table were engaged.
+Select distinct battle from ships s join outcomes o on s.name=o.ship where class='Kongo'
 
 
 
