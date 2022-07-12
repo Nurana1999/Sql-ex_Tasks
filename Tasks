@@ -363,7 +363,42 @@ Find the battles in which Kongo-class ships from the Ships table were engaged.
 Select distinct battle from ships s join outcomes o on s.name=o.ship where class='Kongo'
 
 
+#51
 
+Find the names of the ships with the largest number of guns among all ships having the same displacement (including ships in the Outcomes table).
+
+
+Select name from 
+(Select s.name,numGuns,displacement from classes c join ships s on c.class=s.class
+union 
+Select o.ship,numGuns,displacement from classes c join outcomes o on c.class=o.ship) a
+ where numGuns  =
+(
+select max(numGuns) from classes where 
+class in 
+(Select class from Ships 
+union 
+Select ship from outcomes) group by displacement 
+having displacement =a.displacement
+)
+
+
+#52
+Determine the names of all ships in the Ships table that can be a Japanese battleship having at least nine main guns with a caliber of less than 19 inches and a displacement of not more than 65 000 tons.
+
+Select distinct name from ships s join Classes c on s.class=c.class
+where (c.type='bb' or c.type is null)
+and (c.country='Japan' or  c.country is null)
+and (numGuns>=9 or numGuns is null) and 
+(bore<19 or bore is null) and 
+(displacement<=65000 or displacement is null)
+
+#53
+With a precision of two decimal places, determine the average number of guns for the battleship classes.
+
+Select cast(avg(numGuns*1.0) as numeric(10,2)) from Classes where type='bb'
+
+#54
 
 
 
